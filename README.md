@@ -74,7 +74,7 @@
 
 <script>
     // 【重要】自分のGASのURLに書き換えてください
-    const GAS_URL = '(https://script.google.com/macros/s/AKfycbxq91Xv7OsDJFq8t8PoXNEiEMBoO9ikL37CHrvM2AUdEcCKTzk2O8GH4I8X5Tdrdn4qFg/exec)'; 
+    const GAS_URL ='https://script.google.com/macros/s/AKfycbxq91Xv7OsDJFq8t8PoXNEiEMBoO9ikL37CHrvM2AUdEcCKTzk2O8GH4I8X5Tdrdn4qFg/exec'; 
 
     const types = [
         { id: 0, name: "視覚型学習者", icon: "👁️", desc: "図やグラフで理解するのが得意。カラフルなノートを作るのがおすすめ！", methods: ["マインドマップを使って情報を整理しよう", "カラーペンで重要な箇所を色分けするのが効果的", "YouTube動画や図解を積極的に活用しよう"] },
