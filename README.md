@@ -1,4 +1,3 @@
-# study-diag
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -48,6 +47,8 @@
         button:hover { opacity: 0.8; transform: translateY(-2px); }
         .result-card { display: none; text-align: left; background: #f9f9f9; padding: 20px; border-radius: 15px; }
         .icon { font-size: 3rem; display: block; text-align: center; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -59,8 +60,7 @@
         <button onclick="startDiag()">診断スタート！</button>
     </div>
 
-    <div id="quiz-container">
-        </div>
+    <div id="quiz-container"></div>
 
     <div id="result-screen" class="result-card">
         <span class="icon" id="res-icon"></span>
@@ -68,14 +68,15 @@
         <p id="res-desc"></p>
         <h3>💡 おすすめ勉強法</h3>
         <ul id="res-methods"></ul>
-        <button onclick="location.reload()" style="width:100%">もう一度診断する</button>
+        <button onclick="location.reload()" style="width:100%; margin-top: 20px;">もう一度診断する</button>
     </div>
 </div>
 
 <script>
-    // 【重要】自分のGASのURLに書き換えてください
-    const GAS_URL ='https://script.google.com/macros/s/AKfycbxq91Xv7OsDJFq8t8PoXNEiEMBoO9ikL37CHrvM2AUdEcCKTzk2O8GH4I8X5Tdrdn4qFg/exec'; 
+    // --- GASのURL設定 ---
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxq91Xv7OsDJFq8t8PoXNEiEMBoO9ikL37CHrvM2AUdEcCKTzk2O8GH4I8X5Tdrdn4qFg/exec'; 
 
+    // --- 診断データ ---
     const types = [
         { id: 0, name: "視覚型学習者", icon: "👁️", desc: "図やグラフで理解するのが得意。カラフルなノートを作るのがおすすめ！", methods: ["マインドマップを使って情報を整理しよう", "カラーペンで重要な箇所を色分けするのが効果的", "YouTube動画や図解を積極的に活用しよう"] },
         { id: 1, name: "聴覚型学習者", icon: "🎧", desc: "聞いて理解するのが得意。音読や講義形式がおすすめ！", methods: ["声に出して読む「音読勉強法」が効果的", "友達に説明することで理解が深まる", "軽いBGMをかけながら勉強すると集中しやすい"] },
@@ -100,6 +101,7 @@
     let currentIdx = 0;
     let scores = [0, 0, 0, 0, 0];
 
+    // --- 処理用関数 ---
     function startDiag() {
         const startScreen = document.getElementById('start-screen');
         if (startScreen) {
@@ -140,7 +142,7 @@
         document.getElementById('res-title').innerText = resultType.name;
         document.getElementById('res-desc').innerText = resultType.desc;
         const list = document.getElementById('res-methods');
-        list.innerHTML = ""; // 念のため空にする
+        list.innerHTML = ""; 
         resultType.methods.forEach(m => {
             const li = document.createElement('li');
             li.innerText = m;
@@ -153,14 +155,19 @@
 
     async function sendData(typeName) {
         try {
-            const geoRes = await fetch('https://ipapi.co/json/');
-            const geoData = await geoRes.json();
+            // 地域情報の取得（エラー回避のためtry-catch内）
+            let locationStr = "Unknown";
+            try {
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
+                locationStr = `${geoData.region}, ${geoData.city}`;
+            } catch(e) { console.log("Geo location failed"); }
 
             const payload = {
                 timestamp: new Date().toLocaleString('ja-JP'),
                 result: typeName,
                 scores: scores.join(','),
-                location: `${geoData.region}, ${geoData.city}`,
+                location: locationStr,
                 device: navigator.userAgent
             };
 
